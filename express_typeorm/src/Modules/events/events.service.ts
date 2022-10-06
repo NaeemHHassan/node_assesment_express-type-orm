@@ -92,7 +92,17 @@ export class EventsService {
      */
 
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    return await this.eventRepository.find({
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        workshops: [{ id: true }, { end: true }, { start: true, }, { eventId: 1, }, { name: 1 }, { createdAt: 1 }]
+      },
+      relations: {
+        workshop: true,
+      },
+    });
   }
 
   /* TODO: complete getFutureEventWithWorkshops so that it returns events with workshops, that have not yet started
@@ -162,6 +172,23 @@ export class EventsService {
     ```
      */
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    return await this.eventRepository.find({
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        workshops: ['id', 'end', 'start', 'eventId', 'name', 'createdAt']
+      },
+      relations: {
+        workshop: true,
+      },
+      where: {
+        workshop: {
+          start: {
+            GreaterThan: "NOW()"
+          }
+        }
+      }
+    });
   }
 }
